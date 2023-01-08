@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BlindSweeper</title>
+</head>
+<body>
+    <table id="map" />
+</body>
+</html>
+<script>
+    const width = 7
+    const height = 7
+    var p = .9
+
+    const fields = []
+
+    const map = document.getElementById("map")
+
+    class Field {
+
+        *getNeighbours() {
+            if (this.y !== 0) yield fields[this.x][this.y - 1]
+            if (this.x !== 0) yield fields[this.x - 1][this.y]
+            if (this.y !== height-1) yield fields[this.x][this.y + 1]
+            if (this.x !== width-1) yield fields[this.x + 1][this.y]
+        }
+
+        onclick() {
+            //this.button.style.backgroundColor = "white";
+            //[...this.getNeighbours()].forEach(neighbour => {
+            //    neighbour.button.classList.add("neighbour")
+            //    neighbour.button.onclick = this;
+            //});
+
+            var audio = new Audio('pop.mp3');
+            audio.play();
+        }
+
+        constructor(x, y, button) {
+            this.x = x
+            this.y = y
+            this.button = button
+
+            if (this.x === Math.floor(width / 2) && this.y === Math.floor(height / 2)) {
+                button.classList.remove("invisible")
+
+                button.onclick = () => {
+                    [].concat(...fields).forEach(field => field.button.classList.remove("invisible"))
+                    button.classList.add("invisible");
+                    var audio = new Audio('bell.mp3');
+                    audio.play();
+                }
+            }
+            else {
+                button.onmouseover = () => this.onclick()
+            }
+
+            button.textContent = `${x}:${y}`
+        }
+    }
+
+    function draw() {
+
+        const mapParts = [2, 3, 4]
+
+        for (var x = 0; x < height; x++) {
+
+            let row = document.createElement("tr")
+            let rowFields = []
+
+            for (var y = 0; y < width; y++) {
+                let column = document.createElement("td")
+
+                if (mapParts.includes(x) || mapParts.includes(y)) {
+
+                    let button = document.createElement("button")
+
+                    button.classList.add("field")
+                    button.classList.add("invisible")
+
+                    rowFields.push(new Field(x, y, button))
+
+                    column.appendChild(button)
+                }
+
+                row.appendChild(column)
+            }
+
+            fields.push(rowFields)
+
+            map.appendChild(row)
+        }
+
+        size()
+    }
+
+    draw()
+
+    function size() {
+        const vWith = window.innerWidth * p
+        const vHeight = window.innerHeight * p
+
+        var size = vWith / width > vHeight ?
+            vWith / width :
+            vHeight / height
+
+        const maxSize = Math.min(
+            window.innerWidth / width,
+            window.innerHeight / height) * Math.sqrt(2) - 100
+
+        size = size >= maxSize ? maxSize : size
+
+        map.style.width = size * width + "px"
+        map.style.height = size * height + "px"
+    }
+
+    window.addEventListener("wheel", event => {
+        p += Math.sign(event.deltaY) < 0 ? 0.05 : -0.05
+        size()
+    });
+
+    window.onresize = function () { size() }
+
+</script>
+
+<style>
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        -webkit-touch-callout: none; /* Safari */
+        -webkit-user-select: none; /* Chrome */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+    }
+
+    #map {
+        border-spacing: 0px;
+        background-color: transparent;
+        transform: rotate(0deg);
+    }
+
+    td {
+        padding: 0px;
+        background-color: transparent;
+    }
+
+    .field {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-0deg);
+        background-color: white;
+        color: black;
+        font-size: 100%;
+        border-radius: 100%;
+    }
+
+    .invisible {
+        background-color: transparent;
+    }
+
+    .field.neighbour:hover {
+        background-color: white;
+    }
+
+</style>
