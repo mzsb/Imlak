@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "outDir": "./",
+    "strict": true,
+    "lib": ["es2019", "dom"], 
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["index.ts"],
+  "exclude": ["node_modules"]
+}
