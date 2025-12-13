@@ -1,0 +1,32 @@
+# ===== Node / npm =====
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ===== TypeScript =====
+*.tsbuildinfo
+
+# ===== Build output =====
+# Ha sima tsc-t használsz:
+dist/
+build/
+
+# Ha csak index.ts -> index.js fordítás van,
+# és az index.js-t FEL akarod tölteni GitHub Pages-re,
+# akkor ezt a sort TÖRÖLD:
+# index.js
+
+# ===== IDE / Editor =====
+.vscode/
+!.vscode/extensions.json
+
+.idea/
+*.swp
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Environment =====
+.env
+.env.*
